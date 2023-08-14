@@ -1,4 +1,5 @@
-use wiremock_grpc::MockBuilder;
+use crate::wiremock::builder::MockBuilder;
+
 
 #[test]
 #[should_panic(

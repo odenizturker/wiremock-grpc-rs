@@ -2,19 +2,21 @@ use log::{debug, info, warn};
 use std::{
     net::{SocketAddr, TcpStream},
     sync::{Arc, RwLock},
-    time::Duration,
+    time::Duration, convert::Infallible,
 };
 
-use crate::tonic_ext::{GenericCodec, GenericSvc};
-use crate::MockBuilder;
+use crate::wiremock::tonic_ext::{GenericCodec, GenericSvc};
+use crate::wiremock::builder::MockBuilder;
 use rand::Rng;
 use tonic::{
     codegen::{
         http::{self, HeaderMap, HeaderValue, Method},
-        Body, Never, StdError,
+        Body, StdError,
     },
     Code,
 };
+
+use super::builder::Mountable;
 
 /// A running gRPC server
 /// You do not directly create this object instead use the
@@ -147,7 +149,7 @@ impl GrpcServer {
 
     pub fn setup<M>(&mut self, r: M) -> MockBuilder
     where
-        M: Into<MockBuilder> + Clone + crate::Mountable,
+        M: Into<MockBuilder> + Clone + Mountable,
     {
         r.clone().mount(self);
 
@@ -166,7 +168,7 @@ impl GrpcServer {
     pub fn handle_request<B>(
         &self,
         req: http::Request<B>,
-    ) -> tonic::codegen::BoxFuture<http::Response<tonic::body::BoxBody>, Never>
+    ) -> tonic::codegen::BoxFuture<http::Response<tonic::body::BoxBody>, Infallible>
     where
         B: Body + Send + 'static,
         B::Error: Into<StdError> + Send + 'static,

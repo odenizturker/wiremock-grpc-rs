@@ -1,12 +1,10 @@
 use tonic::Code;
 
-mod wiremock_gen {
-    wiremock_grpc::generate!("hello.Greeter", MyMockServer);
-}
+use crate::{test::mocks_test::wiremock_gen::MyMockServer, wiremock::builder::{MockBuilder, Then}, hello::HelloReply};
 
-use wiremock_gen::*;
-use wiremock_grpc::*;
-use wiremock_grpc_protogen::HelloReply;
+mod wiremock_gen {
+    crate::generate!("hello.Greeter", MyMockServer);
+}
 
 #[tokio::test]
 #[should_panic(expected = "Server terminated with unmatched rules: \n/")]

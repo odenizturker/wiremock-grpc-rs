@@ -1,23 +1,18 @@
 mod wiremock_gen {
-    wiremock_grpc::generate!("hello.Greeter", MyMockServer);
+    crate::generate!("hello.Greeter", MyMockServer);
 }
 
-use std::net::TcpStream;
-
+use tokio::net::TcpStream;
+use tonic::{Code, transport::Channel};
 use wiremock_gen::*;
-use wiremock_grpc::{
-    tonic::{transport::Channel, Code},
-    *,
-};
-use wiremock_grpc_protogen::{
-    greeter_client::GreeterClient, HelloReply, HelloRequest, WeatherReply, WeatherRequest,
-};
+
+use crate::{wiremock::builder::{MockBuilder, Then}, hello::{HelloReply, HelloRequest, greeter_client::GreeterClient, WeatherReply, WeatherRequest}};
 
 #[tokio::test]
 async fn it_starts_with_specified_port() {
     let server = MyMockServer::start(5055).await;
 
-    assert!(TcpStream::connect(&server.address()).is_ok())
+    assert!(TcpStream::connect(&server.address()).await.is_ok())
 }
 
 #[tokio::test]

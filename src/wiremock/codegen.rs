@@ -19,10 +19,12 @@
 /// // ... Later in your test (MyMockServer is generated above)
 /// let mut server = MyMockServer::start_default().await;
 /// ```
+
 #[macro_export]
 macro_rules! generate {
+
     ($prefix:literal, $type: ident) => {
-        use ::wiremock_grpc::tonic::{
+        use tonic::{
             codegen::{http, Body, StdError},
             Code,
         };
@@ -30,8 +32,6 @@ macro_rules! generate {
             ops::{Deref, DerefMut},
             task::Poll,
         };
-
-        use wiremock_grpc::*;
 
         /// A running gRPC server that binds to service with prefix: `
         #[doc = $prefix]
@@ -44,10 +44,10 @@ macro_rules! generate {
         /// ```
         /// More documentations in [`crate`]
         #[derive(Clone)]
-        pub struct $type(pub(crate) GrpcServer);
+        pub struct $type(pub(crate) crate::wiremock::grpc_server::GrpcServer);
 
         impl Deref for $type {
-            type Target = GrpcServer;
+            type Target = crate::wiremock::grpc_server::GrpcServer;
 
             fn deref(&self) -> &Self::Target {
                 &self.0
@@ -62,11 +62,11 @@ macro_rules! generate {
 
         impl<B> tonic::codegen::Service<tonic::codegen::http::Request<B>> for $type
         where
-            B: ::wiremock_grpc::http_body::Body + Send + 'static,
+            B: http_body::Body + Send + 'static,
             B::Error: Into<tonic::codegen::StdError> + Send + 'static,
         {
             type Response = tonic::codegen::http::Response<tonic::body::BoxBody>;
-            type Error = tonic::codegen::Never;
+            type Error = std::convert::Infallible;
             type Future = tonic::codegen::BoxFuture<Self::Response, Self::Error>;
 
             fn poll_ready(
@@ -95,11 +95,11 @@ macro_rules! generate {
             /// let port : u16 = address.port();
             /// ```
             pub async fn start_default() -> Self {
-                let port = GrpcServer::find_unused_port()
+                let port = crate::wiremock::grpc_server::GrpcServer::find_unused_port()
                     .await
                     .expect("Unable to find an open port");
 
-                Self(GrpcServer::new(port)).start_internal().await
+                Self(crate::wiremock::grpc_server::GrpcServer::new(port)).start_internal().await
             }
 
             /// Start the server with a specified port.
@@ -107,7 +107,7 @@ macro_rules! generate {
             /// ## Panics
             /// * When the the port is not available.
             pub async fn start(port: u16) -> Self {
-                Self(GrpcServer::new(port)).start_internal().await
+                Self(crate::wiremock::grpc_server::GrpcServer::new(port)).start_internal().await
             }
 
             async fn start_internal(&mut self) -> Self {
