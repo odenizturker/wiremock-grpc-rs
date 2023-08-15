@@ -1,6 +1,6 @@
 use std::{
     ops::{Deref, DerefMut},
-    task::Poll,
+    task::Poll, convert::Infallible,
 };
 use tonic::{codegen::http, Code};
 
@@ -43,7 +43,7 @@ where
     B::Error: Into<tonic::codegen::StdError> + Send + 'static,
 {
     type Response = tonic::codegen::http::Response<tonic::body::BoxBody>;
-    type Error = tonic::codegen::Never;
+    type Error = Infallible;
     type Future = tonic::codegen::BoxFuture<Self::Response, Self::Error>;
 
     fn poll_ready(&mut self, _cx: &mut std::task::Context<'_>) -> Poll<Result<(), Self::Error>> {

@@ -66,7 +66,7 @@ macro_rules! generate {
             B::Error: Into<tonic::codegen::StdError> + Send + 'static,
         {
             type Response = tonic::codegen::http::Response<tonic::body::BoxBody>;
-            type Error = tonic::codegen::Never;
+            type Error = std::convert::Infallible;
             type Future = tonic::codegen::BoxFuture<Self::Response, Self::Error>;
 
             fn poll_ready(

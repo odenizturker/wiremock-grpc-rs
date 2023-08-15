@@ -9,9 +9,8 @@ use wiremock_grpc::{
     tonic::{transport::Channel, Code},
     *,
 };
-use wiremock_grpc_protogen::{
-    greeter_client::GreeterClient, HelloReply, HelloRequest, WeatherReply, WeatherRequest,
-};
+
+use crate::greeter_proto::{HelloReply, greeter_client::GreeterClient, HelloRequest, WeatherRequest, WeatherReply};
 
 #[tokio::test]
 async fn it_starts_with_specified_port() {

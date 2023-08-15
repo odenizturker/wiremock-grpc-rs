@@ -9,7 +9,10 @@ doc =  false
 doctest = false
 
 [dependencies]
+tonic = "0.9.2"
 tokio = "1"
+prost = "0.11.9"
 wiremock-grpc = {path = "../lib/"}
-wiremock-grpc-protogen = {path = "../protogen/"}
-#wiremock-grpc = "0.0.2-alpha6"
+
+[build-dependencies]
+tonic-build = "0.9.2"

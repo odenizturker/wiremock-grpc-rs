@@ -6,7 +6,8 @@ mod wiremock_gen {
 
 use wiremock_gen::*;
 use wiremock_grpc::*;
-use wiremock_grpc_protogen::HelloReply;
+
+use crate::greeter_proto::HelloReply;
 
 #[tokio::test]
 #[should_panic(expected = "Server terminated with unmatched rules: \n/")]
